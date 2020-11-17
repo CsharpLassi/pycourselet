@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Dict, Generator
+from typing import Dict, Generator, Optional, List
 
 from .courselet.blocks import *
 from .courselet.elements import *
@@ -226,12 +226,14 @@ class CourseletGenerator:
                 os.mkdir(resources_dir)
 
                 for resource_id, resource in self.resources.items():
+                    resource.download(resources_dir)
+
                     resource_element = et.SubElement(resources, 'resource')
                     resource_element.attrib['id'] = resource_id
                     resource_element.attrib['href'] = os.path.join('resources',
-                                                                   f'{resource_id}')
+                                                                   f'{resource.file_name}')
 
-                    resource.download(resources_dir)
+
 
             root = et.ElementTree(courselet_element)
             root.write(os.path.join(tmp_dirname, f'courselet.xml'),
