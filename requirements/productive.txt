@@ -1,0 +1,2 @@
+wget==3.2
+cairosvg==2.5.0
