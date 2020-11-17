@@ -233,8 +233,6 @@ class CourseletGenerator:
                     resource_element.attrib['href'] = os.path.join('resources',
                                                                    f'{resource.file_name}')
 
-
-
             root = et.ElementTree(courselet_element)
             root.write(os.path.join(tmp_dirname, f'courselet.xml'),
                        xml_declaration=True, encoding='UTF-8')
