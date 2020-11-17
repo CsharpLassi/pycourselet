@@ -9,9 +9,12 @@ __author__ = "Lassi"
 __copyright__ = "Lassi"
 __license__ = "gplv3"
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
-from generator import CourseletGenerator
+try:
+    from .generator import CourseletGenerator
+except ImportError:
+    from generator import CourseletGenerator
 
 _logger = logging.getLogger(__name__)
 
