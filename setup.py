@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pycourselet", # Replace with your own username
-    version="0.0.1",
+    name="pycourselet",  # Replace with your own username
+    version="0.1.0.0",
     author="Christoph Laßmann",
     author_email="csharplassi@posteo.de",
     description="Tool to create courselets for Lernsax",
@@ -13,6 +13,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/CsharpLassi/pycourselet",
     packages=setuptools.find_packages(),
+    entry_points={
+        'console_scripts': [
+            'pycourselet = pycourselet.courselet:main',
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
