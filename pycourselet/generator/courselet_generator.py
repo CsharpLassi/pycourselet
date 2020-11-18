@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 from typing import Dict, Generator, Optional, List
@@ -175,7 +176,10 @@ class CourseletGenerator:
     def import_directory(self, dir_path: str):
         def key_function(key):
             if (i := key.find('_')) >= 0:
-                key = key[:i]
+                try:
+                    key = float(key[:i])
+                except Exception as ex:
+                    logging.exception(ex)
             return key
 
         list_dir = os.listdir(dir_path)
