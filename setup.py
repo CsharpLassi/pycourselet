@@ -8,7 +8,7 @@ with open('requirements/productive.txt') as f:
 
 setuptools.setup(
     name="pycourselet",  # Replace with your own username
-    version="0.1.0",
+    version="0.1.1",
     author="Christoph Laßmann",
     author_email="csharplassi@posteo.de",
     description="Tool to create courselets for Lernsax",
