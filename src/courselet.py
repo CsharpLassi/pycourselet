@@ -12,9 +12,9 @@ __license__ = "gplv3"
 __version__ = "0.1.0"
 
 try:
-    from .generator import CourseletGenerator
+    from .pycourselet import CourseletScanner, CourseletXmlContextCompiler
 except ImportError:
-    from generator import CourseletGenerator
+    from pycourselet import CourseletScanner, CourseletXmlContextCompiler
 
 _logger = logging.getLogger(__name__)
 
@@ -36,12 +36,12 @@ def parse_args(args):
         action="version",
         version="exschool {ver}".format(ver=__version__))
     parser.add_argument(
-        '-n', '--name',
-        dest="name",
-        help="name",
+        '-n', '--id',
+        dest="id",
+        help="id",
         type=str,
         default=None,
-        metavar="name")
+        metavar="id")
     parser.add_argument(
         dest="courselet_dir",
         help="courselet directory",
@@ -76,7 +76,7 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
+    logformat = "[%(asctime)s] %(levelname)s:%(id)s:%(message)s"
     logging.basicConfig(level=loglevel, stream=sys.stdout,
                         format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
 
@@ -94,24 +94,25 @@ def main(args):
         _logger.exception(f"'{args.courselet_dir}' is not an directory")
         return 1
 
-    _logger.debug(f"args.name is '{args.name}'")
+    _logger.debug(f"args.id is '{args.id}'")
     _logger.debug(f"args.courselet_dir is '{args.courselet_dir}'")
 
     courselet_dir = args.courselet_dir
     if courselet_dir[-1] == '/':
         courselet_dir = courselet_dir[:-1]
 
-    name = args.name or os.path.basename(courselet_dir)
-    output_file = args.output_file or f'{name}.zip'
+    name = args.id or os.path.basename(courselet_dir)
+    output_file = args.output_file or f'{name}.courselet.zip'
 
-    _logger.info(f"Curselet directory is '{courselet_dir}'")
+    _logger.info(f"Courselet directory is '{courselet_dir}'")
     _logger.info(f"Name is '{name}'")
     _logger.info(f"Output-File is '{output_file}'")
 
-    generator = CourseletGenerator()
-    generator.import_directory(args.courselet_dir)
+    scanner = CourseletScanner()
+    ctx = scanner.scan_directory(courselet_dir)
 
-    generator.write_to(name, output_file)
+    compiler = CourseletXmlContextCompiler(name, output_file)
+    compiler.compile_context(ctx)
 
     return
 

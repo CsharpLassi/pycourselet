@@ -1,3 +1,5 @@
+from pycourselet import CourseletScanner
+
 from pycourselet.tokens import HeaderToken
 
 
@@ -79,3 +81,12 @@ def test_level_6():
     assert token, 'Token not found'
     assert token.level == 6, 'Wrong Level'
     assert token.text == "Test6", 'Wrong Text'
+
+
+def test_scan_level_1():
+    source = '# Test1'
+    scanner = CourseletScanner()
+
+    tree = scanner.scan(source)
+
+    return
