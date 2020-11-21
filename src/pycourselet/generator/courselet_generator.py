@@ -5,6 +5,8 @@ import os
 import re
 from typing import Dict, Generator, Optional, List
 
+from jinja2 import FileSystemLoader, Environment
+
 from .courselet.blocks import *
 from .courselet.elements import *
 from .courselet.pages import *
@@ -182,6 +184,12 @@ class CourseletGenerator:
                     logging.exception(ex)
             return key
 
+        file_loader = FileSystemLoader(os.path.abspath(dir_path))
+        env = Environment(loader=file_loader)
+        env.trim_blocks = True
+        env.lstrip_blocks = True
+        env.rstrip_blocks = True
+
         list_dir = os.listdir(dir_path)
         sorted_list_dir = sorted(list_dir, key=key_function)
         for item_name in sorted_list_dir:
@@ -193,10 +201,12 @@ class CourseletGenerator:
                 if (i := title.rfind('.')) >= 0:
                     title = title[:i]
                 self.create_new_page(title)
-                with open(item_path, 'r') as fs:
-                    for line in fs:
-                        line = line.rstrip()
-                        self.add_text(line, file_path=item_path)
+
+                template = env.get_template(item_name)
+                output = template.render()
+                for line in output.splitlines():
+                    line = line.rstrip()
+                    self.add_text(line, file_path=item_path)
 
     def write_to(self, name: str, output_file: str):
         import xml.etree.ElementTree as et
