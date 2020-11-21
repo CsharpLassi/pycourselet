@@ -1,14 +1,13 @@
 from typing import Optional
 
 from .context import NeedSettings
-from .element_context import ElementContext
+from .text_context import TextContext
 
 
-class TextContext(ElementContext):
-    def __init__(self, type: str = 'text', text: str = None, **kwargs):
-        super().__init__(type, **kwargs)
-
-        self.text: str = text
+class MathTextContext(TextContext):
+    def __init__(self, mode: str = 'tex', **kwargs):
+        super().__init__(type='math', **kwargs)
+        self.mode = mode
 
     @staticmethod
     def need() -> Optional[NeedSettings]:

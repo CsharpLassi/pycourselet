@@ -63,6 +63,9 @@ class ContextManager:
 
         return context
 
+    def pop(self) -> Optional[Context]:
+        return self.stack.pop()
+
     def push(self, context: Context) -> Context:
         if current := self.current():
             current.children.append(context)

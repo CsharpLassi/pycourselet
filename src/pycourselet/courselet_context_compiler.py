@@ -2,7 +2,7 @@ import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as et
-from typing import Optional
+from typing import Optional, List
 
 from .contexts import *
 
@@ -48,6 +48,15 @@ class CourseletContextCompiler:
             ParagraphContext: (
                 self.begin_paragraph_context,
                 self.end_paragraph_context),
+            TextContext: (
+                self.begin_text_context,
+                self.end_text_context),
+            MathTextContext: (
+                self.begin_math_text_context,
+                self.end_math_text_context),
+            CheckboxTextContext: (
+                self.begin_checkbox_text_context,
+                self.end_checkbox_text_context),
         }
 
         context_type = type(context)
@@ -106,8 +115,25 @@ class CourseletContextCompiler:
     def end_sub_heading_text_context(self, context: SubHeadingTextContext, **kwargs):
         return
 
-    def begin_paragraph_context(self, context: ParagraphContext,
-                                **kwargs):
+    def begin_text_context(self, context: TextContext, **kwargs):
+        return
+
+    def end_text_context(self, context: TextContext, **kwargs):
+        return
+
+    def begin_math_text_context(self, context: MathTextContext, **kwargs):
+        return
+
+    def end_math_text_context(self, context: MathTextContext, **kwargs):
+        return
+
+    def begin_checkbox_text_context(self, context: CheckboxTextContext, **kwargs):
+        return
+
+    def end_checkbox_text_context(self, context: CheckboxTextContext, **kwargs):
+        return
+
+    def begin_paragraph_context(self, context: ParagraphContext, **kwargs):
         return
 
     def end_paragraph_context(self, context: SubHeadingTextContext, **kwargs):
@@ -126,6 +152,8 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         self.courselet_element: et.Element = et.Element('courselet')
         self.meta: et.Element = et.SubElement(self.courselet_element, 'meta')
         self.pages: et.Element = et.SubElement(self.courselet_element, 'pages')
+
+        self.page_stack: List[et.Element] = list()
 
         self.current_page: Optional[et.Element] = None
         self.current_page_content: Optional[et.Element] = None
@@ -195,10 +223,14 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         meta_block.attrib['attempts'] = context.attempts
         meta_block.attrib['feedback'] = str(context.feedback)
 
+        self.page_stack.append(self.current_page)
+
     def end_page_context(self, context: PageContext, **kwargs):
-        root = et.ElementTree(self.current_page)
-        root.write(os.path.join(self.page_dir, f'{context.name}.xml'),
-                   xml_declaration=True, encoding='UTF-8')
+        page_context = self.page_stack.pop()
+        if page_context:
+            root = et.ElementTree(page_context)
+            root.write(os.path.join(self.page_dir, f'{context.name}.xml'),
+                       xml_declaration=True, encoding='UTF-8')
 
     # Page Heading
     def begin_page_heading_context(self, context: PageHeadingContext, **kwargs):
@@ -215,6 +247,26 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
                                 **kwargs):
         block = self._create_block(context)
         self.current_page_block = block
+
+    # Text
+    def begin_text_context(self, context: TextContext, **kwargs):
+        if not context.text:
+            return
+        element = self._create_element(context)
+        element.text = context.text
+
+    def begin_math_text_context(self, context: MathTextContext, **kwargs):
+        if not context.text:
+            return
+        element = self._create_element(context)
+        element.attrib['mode'] = context.mode
+        element.text = context.text
+
+    def begin_checkbox_text_context(self, context: CheckboxTextContext, **kwargs):
+        element = self._create_element(context)
+        element.attrib['is_exercise'] = str(context.is_exercise)
+        element.attrib['default_score'] = str(context.default_score)
+        element.text = context.text
 
     # Heading
     def begin_heading_context(self, context: HeadingContext, **kwargs):

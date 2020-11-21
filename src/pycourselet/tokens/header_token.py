@@ -17,9 +17,10 @@ class HeaderToken(Token):
     def walk(self, ctx: ContextManager):
         if self.level == 1:
             current_ctx = ctx.current()
-            if current_ctx is None or type(current_ctx) is not PageContext:
-                ctx.goto(PageContext)
-                current_ctx = ctx.push_create(PageContext, goto=False, title=self.text)
+            if current_ctx is None or \
+                    type(current_ctx) is not PageContext or \
+                    len(current_ctx.children) > 0:
+                current_ctx = ctx.create_branch(PageContext, title=self.text)
 
             current_ctx.title = self.text
 
