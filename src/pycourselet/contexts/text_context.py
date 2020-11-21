@@ -1,7 +1,7 @@
-from pycourselet.contexts import TypeContext
+from pycourselet.contexts import ElementContext
 
 
-class TextContext(TypeContext):
+class TextContext(ElementContext):
     def __init__(self, type: str = 'text', **kwargs):
         super().__init__(type, **kwargs)
 

@@ -1,10 +1,11 @@
 from typing import Optional, Type
 
-from pycourselet.contexts import Context, TypeContext
+from pycourselet.contexts import Context
+from .block_context import BlockContext
 from .text_context import TextContext
 
 
-class PageHeadingContext(TypeContext):
+class PageHeadingContext(BlockContext):
     def __init__(self, **kwargs):
         super().__init__('heading1', **kwargs)
 

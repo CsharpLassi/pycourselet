@@ -6,7 +6,7 @@ element_id = 0
 class ElementContext(TypeContext):
     def __init__(self, type: str, **kwargs):
         global element_id
-        super(TypeContext).__init__(type, **kwargs)
+        super(ElementContext, self).__init__(type, **kwargs)
 
         element_id += 1
 

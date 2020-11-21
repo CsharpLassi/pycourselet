@@ -24,7 +24,15 @@ class CourseletContextCompiler:
 
     def _listen_context(self, context: Context, ctx: ContextManager, **kwargs):
         methods = {
-            PageContext: (self.begin_page_context, self.end_page_context)
+            PageContext: (
+                self.begin_page_context,
+                self.end_page_context),
+            PageHeadingContext: (
+                self.begin_page_heading_context,
+                self.end_page_heading_context),
+            PageHeadingTextContext: (
+                self.begin_page_heading_text_context,
+                self.end_page_heading_text_context),
         }
 
         context_type = type(context)
@@ -44,6 +52,19 @@ class CourseletContextCompiler:
     def end_page_context(self, context: PageContext, **kwargs):
         return
 
+    def begin_page_heading_context(self, context: PageHeadingContext, **kwargs):
+        return
+
+    def end_page_heading_context(self, context: PageHeadingContext, **kwargs):
+        return
+
+    def begin_page_heading_text_context(self, context: PageHeadingTextContext,
+                                        **kwargs):
+        return
+
+    def end_page_heading_text_context(self, context: PageHeadingTextContext, **kwargs):
+        return
+
 
 class CourseletXmlContextCompiler(CourseletContextCompiler):
     def __init__(self, name: str, output_file: str):
@@ -60,6 +81,8 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
 
         self.current_page: Optional[et.Element] = None
         self.current_page_content: Optional[et.Element] = None
+
+        self.current_page_block: Optional[et.Element] = None
 
     def begin(self, ctx: ContextManager, **kwargs):
         # Metas
@@ -82,6 +105,26 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         if output_file.endswith('.zip'):
             output_file = self.output_file[:-4]
         shutil.make_archive(output_file, 'zip', self.build_dir)
+
+    def _create_block(self, context: BlockContext,
+                      page_content=None) -> et.Element:
+        if not page_content:
+            page_content = self.current_page_content
+
+        block = et.SubElement(page_content, 'block')
+        block.attrib['id'] = context.id
+        block.attrib['type'] = context.type
+        return block
+
+    def _create_element(self, context: ElementContext,
+                        block=None) -> et.Element:
+        if not block:
+            block = self.current_page_block
+
+        element = et.SubElement(block, 'element')
+        element.attrib['id'] = context.id
+        element.attrib['type'] = context.type
+        return element
 
     def begin_page_context(self, context: PageContext, **kwargs):
         page_element = et.SubElement(self.pages, 'page')
@@ -108,3 +151,12 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         root = et.ElementTree(self.current_page)
         root.write(os.path.join(self.page_dir, f'{context.name}.xml'),
                    xml_declaration=True, encoding='UTF-8')
+
+    def begin_page_heading_context(self, context: PageHeadingContext, **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    def begin_page_heading_text_context(self, context: PageHeadingTextContext,
+                                        **kwargs):
+        element = self._create_element(context)
+        element.text = context.text
