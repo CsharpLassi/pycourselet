@@ -53,36 +53,6 @@ def test_level_3():
     assert token.text == "Test3", 'Wrong Text'
 
 
-def test_level_4():
-    source = '#### Test4'
-
-    token = HeaderToken.parse(source)
-
-    assert token, 'Token not found'
-    assert token.level == 4, 'Wrong Level'
-    assert token.text == "Test4", 'Wrong Text'
-
-
-def test_level_5():
-    source = '##### Test5'
-
-    token = HeaderToken.parse(source)
-
-    assert token, 'Token not found'
-    assert token.level == 5, 'Wrong Level'
-    assert token.text == "Test5", 'Wrong Text'
-
-
-def test_level_6():
-    source = '###### Test6'
-
-    token = HeaderToken.parse(source)
-
-    assert token, 'Token not found'
-    assert token.level == 6, 'Wrong Level'
-    assert token.text == "Test6", 'Wrong Text'
-
-
 def test_scan_level_1():
     source = '# Test1'
     scanner = CourseletScanner()

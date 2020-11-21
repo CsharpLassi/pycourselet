@@ -33,7 +33,7 @@ class HeaderToken(Token):
 
     @staticmethod
     def parse(source: str) -> Optional[HeaderToken]:
-        levels = ['# ', '## ', '### ', '#### ', '##### ', '###### ']
+        levels = ['# ', '## ', '### ']
 
         for i, pattern in enumerate(levels):
             level = i + 1
