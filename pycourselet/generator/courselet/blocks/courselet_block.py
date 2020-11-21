@@ -1,9 +1,9 @@
 import xml.etree.ElementTree as et
-
 from typing import Optional, TypeVar, Type, List
 
-# noinspection PyTypeChecker
-B = TypeVar('B', bound="CourseletBlock")
+from ..elements import CourseletElement
+
+B = TypeVar('B', bound=CourseletElement)
 
 
 class CourseletBlock:
@@ -14,8 +14,8 @@ class CourseletBlock:
         self.current_element_id_number: int = 0
         self.elements: List[CourseletElement] = list()
 
-    def add_element(self, block_type: Type[B], *args, **kwargs) -> B:
-        element = block_type(self.next_element_id(), *args, **kwargs)
+    def add_element(self, element_type: Type[B], *args, **kwargs) -> B:
+        element = element_type(self.next_element_id(), *args, **kwargs)
         self.elements.append(element)
         return element
 
