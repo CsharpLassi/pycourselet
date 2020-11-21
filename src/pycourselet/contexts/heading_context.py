@@ -1,7 +1,7 @@
-from typing import Optional, Type
+from typing import Optional
 
-from pycourselet.contexts import Context
 from .block_context import BlockContext
+from .context import NeedSettings
 from .text_context import TextContext
 
 
@@ -10,9 +10,9 @@ class PageHeadingContext(BlockContext):
         super().__init__('heading1', **kwargs)
 
     @staticmethod
-    def need() -> Optional[Type[Context]]:
+    def need() -> Optional[NeedSettings]:
         from .page_context import PageContext
-        return PageContext
+        return NeedSettings(PageContext)
 
 
 class PageHeadingTextContext(TextContext):
@@ -20,5 +20,43 @@ class PageHeadingTextContext(TextContext):
         super().__init__(type='line', **kwargs)
 
     @staticmethod
-    def need() -> Optional[Type[Context]]:
-        return PageHeadingContext
+    def need() -> Optional[NeedSettings]:
+        return NeedSettings(PageHeadingContext)
+
+
+class HeadingContext(BlockContext):
+    def __init__(self, **kwargs):
+        super().__init__('heading2', **kwargs)
+
+    @staticmethod
+    def need() -> Optional[NeedSettings]:
+        from .page_context import PageContext
+        return NeedSettings(PageContext)
+
+
+class HeadingTextContext(TextContext):
+    def __init__(self, **kwargs):
+        super().__init__(type='line', **kwargs)
+
+    @staticmethod
+    def need() -> Optional[NeedSettings]:
+        return NeedSettings(HeadingContext, force_new=True)
+
+
+class SubHeadingContext(BlockContext):
+    def __init__(self, **kwargs):
+        super().__init__('heading3', **kwargs)
+
+    @staticmethod
+    def need() -> Optional[NeedSettings]:
+        from .paragraph_context import ParagraphContext
+        return NeedSettings(ParagraphContext)
+
+
+class SubHeadingTextContext(TextContext):
+    def __init__(self, **kwargs):
+        super().__init__(type='line', **kwargs)
+
+    @staticmethod
+    def need() -> Optional[NeedSettings]:
+        return NeedSettings(SubHeadingContext)

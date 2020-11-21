@@ -33,6 +33,21 @@ class CourseletContextCompiler:
             PageHeadingTextContext: (
                 self.begin_page_heading_text_context,
                 self.end_page_heading_text_context),
+            HeadingContext: (
+                self.begin_heading_context,
+                self.end_heading_context),
+            HeadingTextContext: (
+                self.begin_heading_text_context,
+                self.end_heading_text_context),
+            SubHeadingContext: (
+                self.begin_sub_heading_context,
+                self.end_sub_heading_context),
+            SubHeadingTextContext: (
+                self.begin_sub_heading_text_context,
+                self.end_sub_heading_text_context),
+            ParagraphContext: (
+                self.begin_paragraph_context,
+                self.end_paragraph_context),
         }
 
         context_type = type(context)
@@ -63,6 +78,39 @@ class CourseletContextCompiler:
         return
 
     def end_page_heading_text_context(self, context: PageHeadingTextContext, **kwargs):
+        return
+
+    def begin_heading_context(self, context: HeadingContext, **kwargs):
+        return
+
+    def end_heading_context(self, context: HeadingContext, **kwargs):
+        return
+
+    def begin_heading_text_context(self, context: HeadingTextContext,
+                                   **kwargs):
+        return
+
+    def end_heading_text_context(self, context: HeadingTextContext, **kwargs):
+        return
+
+    def begin_sub_heading_context(self, context: SubHeadingContext, **kwargs):
+        return
+
+    def end_sub_heading_context(self, context: SubHeadingContext, **kwargs):
+        return
+
+    def begin_sub_heading_text_context(self, context: SubHeadingTextContext,
+                                       **kwargs):
+        return
+
+    def end_sub_heading_text_context(self, context: SubHeadingTextContext, **kwargs):
+        return
+
+    def begin_paragraph_context(self, context: ParagraphContext,
+                                **kwargs):
+        return
+
+    def end_paragraph_context(self, context: SubHeadingTextContext, **kwargs):
         return
 
 
@@ -152,11 +200,38 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         root.write(os.path.join(self.page_dir, f'{context.name}.xml'),
                    xml_declaration=True, encoding='UTF-8')
 
+    # Page Heading
     def begin_page_heading_context(self, context: PageHeadingContext, **kwargs):
         block = self._create_block(context)
         self.current_page_block = block
 
     def begin_page_heading_text_context(self, context: PageHeadingTextContext,
                                         **kwargs):
+        element = self._create_element(context)
+        element.text = context.text
+
+    # Paragraphs
+    def begin_paragraph_context(self, context: ParagraphContext,
+                                **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    # Heading
+    def begin_heading_context(self, context: HeadingContext, **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    def begin_heading_text_context(self, context: HeadingTextContext,
+                                   **kwargs):
+        element = self._create_element(context)
+        element.text = context.text
+
+    # Sub Heading
+    def begin_sub_heading_context(self, context: SubHeadingContext, **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    def begin_sub_heading_text_context(self, context: SubHeadingTextContext,
+                                       **kwargs):
         element = self._create_element(context)
         element.text = context.text

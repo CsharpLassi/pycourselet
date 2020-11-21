@@ -22,6 +22,12 @@ class ContextManager:
 
         return None
 
+    def exist_goto(self, context_type: Type[C]) -> bool:
+        for item in self.stack:
+            if type(item) is context_type:
+                return True
+        return False
+
     def create_branch(self, context_type: Type[C], **kwargs) -> C:
         context_type = context_type(**kwargs)
         self.base.append(context_type)
@@ -31,17 +37,24 @@ class ContextManager:
 
         return context_type
 
-    def push_create(self, context_type: Type[C], **kwargs) -> C:
+    def push_create(self, context_type: Type[C], goto=True, **kwargs) -> C:
         needs = list()
         needs.append(context_type)
 
-        need_context = context_type.need()
-        while need_context:
-            if type(self.current()) is not need_context:
-                needs.append(need_context)
-                need_context = need_context.need()
+        need_settings = context_type.need()
+        while need_settings:
+            if goto and self.exist_goto(need_settings.context):
+                self.goto(need_settings.context)
+
+                if need_settings.force_new:
+                    self.stack.pop()
+                    needs.append(need_settings.context)
+                    break
+            if type(self.current()) is not need_settings.context:
+                needs.append(need_settings.context)
+                need_settings = need_settings.context.need()
                 continue
-            need_context = None
+            break
 
         needs.reverse()
         for need_context in needs:

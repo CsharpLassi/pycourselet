@@ -4,7 +4,9 @@ from typing import Optional
 
 from .token import Token
 from ..contexts import ContextManager
-from ..contexts import PageContext, PageHeadingTextContext
+from ..contexts import PageContext, PageHeadingTextContext, \
+    HeadingTextContext, \
+    SubHeadingTextContext
 
 
 class HeaderToken(Token):
@@ -17,16 +19,16 @@ class HeaderToken(Token):
             current_ctx = ctx.current()
             if current_ctx is None or type(current_ctx) is not PageContext:
                 ctx.goto(PageContext)
-                current_ctx = ctx.push_create(PageContext, title=self.text)
+                current_ctx = ctx.push_create(PageContext, goto=False, title=self.text)
 
             current_ctx.title = self.text
 
             header_context = ctx.push_create(PageHeadingTextContext)
             header_context.text = self.text
         elif self.level == 2:
-            pass
+            ctx.push_create(HeadingTextContext, text=self.text)
         else:
-            pass
+            ctx.push_create(SubHeadingTextContext, text=self.text)
         return
 
     @staticmethod
