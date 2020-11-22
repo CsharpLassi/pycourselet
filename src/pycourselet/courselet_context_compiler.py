@@ -79,6 +79,9 @@ class CourseletContextCompiler:
             TableRowBreakContext: (
                 self.begin_table_row_break_context,
                 self.end_table_row_break_context),
+            AudioTextContext: (
+                self.begin_audio_context,
+                self.end_audio_context),
         }
 
         context_type = type(context)
@@ -199,6 +202,14 @@ class CourseletContextCompiler:
 
     def end_table_row_break_context(self, context: TableRowBreakContext,
                                     **kwargs):
+        return
+
+    def begin_audio_context(self, context: AudioTextContext,
+                            **kwargs):
+        return
+
+    def end_audio_context(self, context: TableRowBreakContext,
+                          **kwargs):
         return
 
 
@@ -427,3 +438,44 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
     def begin_table_row_break_context(self, context: TableRowBreakContext,
                                       **kwargs):
         element = self._create_element(context)
+
+    # Audio
+    def begin_audio_context(self, context: AudioTextContext,
+                            **kwargs):
+        block = self._create_element(context)
+
+        url_pattern = r'^[a-z]*://'
+        is_online = re.match(url_pattern, context.url)
+
+        url = context.url
+
+        if url.startswith('./'):
+            url = url[2:]
+
+        if self.current_file_path and not is_online:
+            base_url = os.path.dirname(self.current_file_path)
+            url = os.path.join(base_url, url)
+
+        suffix = pathlib.Path(url).suffix[1:]
+
+        resource_id = self.resource_id = self.resource_id + 1
+
+        resource_name = f'audio_{resource_id}'
+
+        dest_path = os.path.join(self.resources_dir, f'{resource_name}.{suffix}')
+
+        if is_online:
+            # Online
+            print(f'Download: {url}; Suffix:{suffix}')
+            wget.download(url, dest_path)
+        else:
+            shutil.copy(url, dest_path)
+
+        block.attrib['audio_idref'] = resource_name
+
+        resource_element = et.SubElement(self.resources, 'resource')
+        resource_element.attrib['id'] = resource_name
+        resource_element.attrib['href'] = os.path.join('resources',
+                                                       f'{resource_name}.{suffix}')
+
+        return

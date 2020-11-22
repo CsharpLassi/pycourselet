@@ -11,9 +11,11 @@ __all__ = ['ContextManager',
            'ImageContext',
            'FileContext',
            'ListContext', 'ListHeadingContext',
-           'TableBlockContext', 'TableRowBreakContext', 'TableColumnBreakContext'
+           'TableBlockContext', 'TableRowBreakContext', 'TableColumnBreakContext',
+           'AudioTextContext'
            ]
 
+from .audio_context import AudioTextContext
 from .block_context import BlockContext
 from .checkbox_context import CheckboxTextContext
 from .context import Context, TypeContext

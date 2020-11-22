@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import re
 from collections import Generator
 
 from .token import Token
-from ..contexts import TextContext, MathTextContext, CheckboxTextContext, ContextManager
+from ..contexts import TextContext, MathTextContext, CheckboxTextContext, \
+    ContextManager, AudioTextContext
 
 
 class TextToken(Token):
@@ -52,6 +54,35 @@ class TextToken(Token):
                     new_list.append((match_item, 'text'))
             return new_list
 
+        def parse_links(items, type, r_i_type):
+            pattern = fr'{type}\[(?P<alt>.*?)\]\((?P<url>.*?)?\)'
+
+            new_list = list()
+            for item, i_type in items:
+                if i_type != 'text':
+                    new_list.append((item, i_type))
+                    continue
+
+                match_item = item
+
+                while match := re.search(pattern, match_item):
+                    begin_pos = match.regs[0][0]
+                    end_pos = match.regs[0][1]
+
+                    before_text = match_item[:begin_pos]
+                    match_item = match_item[end_pos:]
+
+                    alt_text = match.group('alt')
+                    url = match.group('url')
+
+                    new_list.append((before_text, 'text'))
+                    new_list.append(((alt_text, url), r_i_type))
+
+                if match_item:
+                    new_list.append((match_item, 'text'))
+
+            return new_list
+
         items = [(line, 'text')]
 
         # Math
@@ -80,6 +111,9 @@ class TextToken(Token):
         items = parse_box(items, '[]', 'checkbox_false')
         items = parse_box(items, '[x]', 'checkbox_true')
 
+        # Links
+        items = parse_links(items, '!audio', 'audio')
+
         for item, i_type in items:
             if i_type == 'text' and item and item != '':
                 yield TextToken(text=format_text(item))
@@ -89,6 +123,8 @@ class TextToken(Token):
                 yield CheckBoxTextToken(value=False)
             elif i_type == 'checkbox_true':
                 yield CheckBoxTextToken(value=True)
+            elif i_type == 'audio':
+                yield AudioTokenTextToken(item[0], item[1])
 
 
 class MathTextToken(TextToken):
@@ -106,3 +142,13 @@ class CheckBoxTextToken(TextToken):
 
     def walk(self, ctx: ContextManager):
         ctx.push_create(CheckboxTextContext, value=self.value)
+
+
+class AudioTokenTextToken(TextToken):
+    def __init__(self, alt: str, url: str):
+        super().__init__()
+        self.url = url
+        self.alt = alt
+
+    def walk(self, ctx: ContextManager):
+        ctx.push_create(AudioTextContext, alt=self.alt, url=self.url)
