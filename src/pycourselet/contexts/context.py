@@ -4,9 +4,10 @@ from typing import List, Optional, Type
 
 
 class NeedSettings:
-    def __init__(self, context: Type[Context], force_new: bool = False):
+    def __init__(self, *contexts: Type[Context], force_new: bool = False):
         self.force_new = force_new
-        self.context = context
+        self.contexts = contexts
+        self.context = contexts[0]
 
 
 class Context:

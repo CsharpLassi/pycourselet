@@ -13,4 +13,5 @@ class TextContext(ElementContext):
     @staticmethod
     def need() -> Optional[NeedSettings]:
         from .paragraph_context import ParagraphContext
-        return NeedSettings(ParagraphContext)
+        from .table_contexts import TableBlockContext
+        return NeedSettings(ParagraphContext, TableBlockContext)

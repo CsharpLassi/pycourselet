@@ -70,6 +70,15 @@ class CourseletContextCompiler:
             ListHeadingContext: (
                 self.begin_list_heading_context,
                 self.end_list_heading_context),
+            TableBlockContext: (
+                self.begin_table_block_context,
+                self.end_table_block_context),
+            TableColumnBreakContext: (
+                self.begin_table_column_break_context,
+                self.end_table_column_break_context),
+            TableRowBreakContext: (
+                self.begin_table_row_break_context,
+                self.end_table_row_break_context),
         }
 
         context_type = type(context)
@@ -168,6 +177,28 @@ class CourseletContextCompiler:
         return
 
     def end_list_heading_context(self, context: ListHeadingContext, **kwargs):
+        return
+
+    def begin_table_block_context(self, context: TableBlockContext, **kwargs):
+        return
+
+    def end_table_block_context(self, context: TableBlockContext, **kwargs):
+        return
+
+    def begin_table_column_break_context(self, context: TableColumnBreakContext,
+                                         **kwargs):
+        return
+
+    def end_table_column_break_context(self, context: TableColumnBreakContext,
+                                       **kwargs):
+        return
+
+    def begin_table_row_break_context(self, context: TableRowBreakContext,
+                                      **kwargs):
+        return
+
+    def end_table_row_break_context(self, context: TableRowBreakContext,
+                                    **kwargs):
         return
 
 
@@ -383,3 +414,16 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
                                                        f'{resource_name}.{suffix}')
 
         return
+
+    # Table
+    def begin_table_block_context(self, context: TableBlockContext, **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    def begin_table_column_break_context(self, context: TableColumnBreakContext,
+                                         **kwargs):
+        element = self._create_element(context)
+
+    def begin_table_row_break_context(self, context: TableRowBreakContext,
+                                      **kwargs):
+        element = self._create_element(context)

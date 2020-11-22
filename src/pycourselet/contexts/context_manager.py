@@ -43,14 +43,16 @@ class ContextManager:
 
         need_settings = context_type.need()
         while need_settings:
-            if goto and self.exist_goto(need_settings.context):
-                self.goto(need_settings.context)
+            if goto:
+                for sub_context in need_settings.contexts:
+                    if self.exist_goto(sub_context):
+                        self.goto(sub_context)
 
-                if need_settings.force_new:
-                    self.stack.pop()
-                    needs.append(need_settings.context)
-                    break
-            if type(self.current()) is not need_settings.context:
+                        if need_settings.force_new:
+                            self.stack.pop()
+                            needs.append(need_settings.context)
+                            break
+            if type(self.current()) not in need_settings.contexts:
                 needs.append(need_settings.context)
                 need_settings = need_settings.context.need()
                 continue

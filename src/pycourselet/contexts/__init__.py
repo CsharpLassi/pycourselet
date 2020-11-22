@@ -11,6 +11,7 @@ __all__ = ['ContextManager',
            'ImageContext',
            'FileContext',
            'ListContext', 'ListHeadingContext',
+           'TableBlockContext', 'TableRowBreakContext', 'TableColumnBreakContext'
            ]
 
 from .block_context import BlockContext
@@ -28,4 +29,6 @@ from .list_context import ListContext, ListHeadingContext
 from .math_context import MathTextContext
 from .page_context import PageContext
 from .paragraph_context import ParagraphContext
+from .table_contexts import TableBlockContext, TableRowBreakContext, \
+    TableColumnBreakContext
 from .text_context import TextContext
