@@ -70,7 +70,12 @@ class CourseletScanner:
             yield image_token
             return
 
-            # Control Tokens
+        # List Token
+        if list_token := ListToken.parse(line):
+            yield list_token
+            return
+
+        # Control Tokens
         if paragraph_token := ParagraphEndToken.parse(line):
             yield paragraph_token
             return

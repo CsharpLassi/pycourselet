@@ -46,9 +46,6 @@ class CourseletContextCompiler:
             HeadingTextContext: (
                 self.begin_heading_text_context,
                 self.end_heading_text_context),
-            SubHeadingContext: (
-                self.begin_sub_heading_context,
-                self.end_sub_heading_context),
             SubHeadingTextContext: (
                 self.begin_sub_heading_text_context,
                 self.end_sub_heading_text_context),
@@ -67,6 +64,12 @@ class CourseletContextCompiler:
             ImageContext: (
                 self.begin_image_context,
                 self.end_image_context),
+            ListContext: (
+                self.begin_list_context,
+                self.end_list_context),
+            ListHeadingContext: (
+                self.begin_list_heading_context,
+                self.end_list_heading_context),
         }
 
         context_type = type(context)
@@ -118,12 +121,6 @@ class CourseletContextCompiler:
     def end_heading_text_context(self, context: HeadingTextContext, **kwargs):
         return
 
-    def begin_sub_heading_context(self, context: SubHeadingContext, **kwargs):
-        return
-
-    def end_sub_heading_context(self, context: SubHeadingContext, **kwargs):
-        return
-
     def begin_sub_heading_text_context(self, context: SubHeadingTextContext,
                                        **kwargs):
         return
@@ -159,6 +156,18 @@ class CourseletContextCompiler:
         return
 
     def end_image_context(self, context: ImageContext, **kwargs):
+        return
+
+    def begin_list_context(self, context: ListContext, **kwargs):
+        return
+
+    def end_list_context(self, context: ListContext, **kwargs):
+        return
+
+    def begin_list_heading_context(self, context: ListHeadingContext, **kwargs):
+        return
+
+    def end_list_heading_context(self, context: ListHeadingContext, **kwargs):
         return
 
 
@@ -309,13 +318,17 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         element = self._create_element(context)
         element.text = context.text
 
-    # Sub Heading
-    def begin_sub_heading_context(self, context: SubHeadingContext, **kwargs):
+    def begin_sub_heading_text_context(self, context: SubHeadingTextContext,
+                                       **kwargs):
+        element = self._create_element(context)
+        element.text = context.text
+
+    # list
+    def begin_list_context(self, context: ListContext, **kwargs):
         block = self._create_block(context)
         self.current_page_block = block
 
-    def begin_sub_heading_text_context(self, context: SubHeadingTextContext,
-                                       **kwargs):
+    def begin_list_heading_context(self, context: ListHeadingContext, **kwargs):
         element = self._create_element(context)
         element.text = context.text
 

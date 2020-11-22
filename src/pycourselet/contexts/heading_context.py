@@ -43,20 +43,11 @@ class HeadingTextContext(TextContext):
         return NeedSettings(HeadingContext, force_new=True)
 
 
-class SubHeadingContext(BlockContext):
+class SubHeadingTextContext(TextContext):
     def __init__(self, **kwargs):
-        super().__init__('heading3', **kwargs)
+        super().__init__(type='heading3', **kwargs)
 
     @staticmethod
     def need() -> Optional[NeedSettings]:
         from .paragraph_context import ParagraphContext
         return NeedSettings(ParagraphContext)
-
-
-class SubHeadingTextContext(TextContext):
-    def __init__(self, **kwargs):
-        super().__init__(type='line', **kwargs)
-
-    @staticmethod
-    def need() -> Optional[NeedSettings]:
-        return NeedSettings(SubHeadingContext)

@@ -4,12 +4,13 @@ __all__ = ['ContextManager',
            'TextContext',
            'PageHeadingContext', 'PageHeadingTextContext',
            'HeadingContext', 'HeadingTextContext',
-           'SubHeadingContext', 'SubHeadingTextContext',
+           'SubHeadingTextContext',
            'ParagraphContext',
            'MathTextContext',
            'CheckboxTextContext',
            'ImageContext',
-           'FileContext'
+           'FileContext',
+           'ListContext', 'ListHeadingContext',
            ]
 
 from .block_context import BlockContext
@@ -20,9 +21,10 @@ from .control_contexts import FileContext
 from .element_context import ElementContext
 from .heading_context import (PageHeadingContext, PageHeadingTextContext,
                               HeadingContext, HeadingTextContext,
-                              SubHeadingContext, SubHeadingTextContext
+                              SubHeadingTextContext
                               )
 from .image_context import ImageContext
+from .list_context import ListContext, ListHeadingContext
 from .math_context import MathTextContext
 from .page_context import PageContext
 from .paragraph_context import ParagraphContext
