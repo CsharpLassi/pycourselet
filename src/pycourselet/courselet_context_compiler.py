@@ -1,8 +1,12 @@
 import os
+import pathlib
+import re
 import shutil
 import tempfile
 import xml.etree.ElementTree as et
 from typing import Optional, List
+
+import wget
 
 from .contexts import *
 
@@ -24,6 +28,9 @@ class CourseletContextCompiler:
 
     def _listen_context(self, context: Context, ctx: ContextManager, **kwargs):
         methods = {
+            FileContext: (
+                self.begin_file_context,
+                self.end_file_context),
             PageContext: (
                 self.begin_page_context,
                 self.end_page_context),
@@ -57,6 +64,9 @@ class CourseletContextCompiler:
             CheckboxTextContext: (
                 self.begin_checkbox_text_context,
                 self.end_checkbox_text_context),
+            ImageContext: (
+                self.begin_image_context,
+                self.end_image_context),
         }
 
         context_type = type(context)
@@ -69,6 +79,12 @@ class CourseletContextCompiler:
 
         if context_type in methods:
             methods[context_type][1](context, **kwargs)
+
+    def begin_file_context(self, context: FileContext, **kwargs):
+        return
+
+    def end_file_context(self, context: FileContext, **kwargs):
+        return
 
     def begin_page_context(self, context: PageContext, **kwargs):
         return
@@ -136,7 +152,13 @@ class CourseletContextCompiler:
     def begin_paragraph_context(self, context: ParagraphContext, **kwargs):
         return
 
-    def end_paragraph_context(self, context: SubHeadingTextContext, **kwargs):
+    def end_paragraph_context(self, context: ParagraphContext, **kwargs):
+        return
+
+    def begin_image_context(self, context: ImageContext, **kwargs):
+        return
+
+    def end_image_context(self, context: ImageContext, **kwargs):
         return
 
 
@@ -144,6 +166,10 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
     def __init__(self, name: str, output_file: str):
         self.name = name
         self.output_file = output_file
+
+        self.current_file_path: Optional[str] = None
+
+        self.resource_id: int = 0
 
         self.build_dir = tempfile.TemporaryDirectory(prefix='pycourselet_').name
         self.page_dir = os.path.join(self.build_dir, 'pages')
@@ -157,6 +183,8 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
 
         self.current_page: Optional[et.Element] = None
         self.current_page_content: Optional[et.Element] = None
+
+        self.resources: et.Element = et.SubElement(self.courselet_element, 'resources')
 
         self.current_page_block: Optional[et.Element] = None
 
@@ -201,6 +229,9 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
         element.attrib['id'] = context.id
         element.attrib['type'] = context.type
         return element
+
+    def begin_file_context(self, context: FileContext, **kwargs):
+        self.current_file_path = context.base_file_url
 
     def begin_page_context(self, context: PageContext, **kwargs):
         page_element = et.SubElement(self.pages, 'page')
@@ -287,3 +318,55 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
                                        **kwargs):
         element = self._create_element(context)
         element.text = context.text
+
+    # Image
+    def begin_image_context(self, context: ImageContext,
+                            **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+        block.attrib['alt'] = context.alt_text
+
+        url_pattern = r'^[a-z]*://'
+        is_online = re.match(url_pattern, context.url)
+
+        url = context.url
+
+        if url.startswith('./'):
+            url = url[2:]
+
+        if self.current_file_path and not is_online:
+            base_url = os.path.dirname(self.current_file_path)
+            url = os.path.join(base_url, url)
+
+        suffix = pathlib.Path(url).suffix[1:]
+
+        resource_id = self.resource_id = self.resource_id + 1
+
+        resource_name = f'image_{resource_id}'
+
+        dest_path = os.path.join(self.resources_dir, f'{resource_name}.{suffix}')
+
+        if is_online:
+            # Online
+            print(f'Download: {url}; Suffix:{suffix}')
+            wget.download(url, dest_path)
+
+            if suffix == 'svg':
+                from cairosvg import svg2png
+                suffix = 'png'
+                new_dest_path = os.path.join(self.resources_dir,
+                                             f'{resource_name}.{suffix}')
+                svg2png(url=dest_path, write_to=new_dest_path)
+                os.remove(dest_path)
+        else:
+            shutil.copy(url, dest_path)
+
+        block.attrib['image_idref'] = resource_name
+
+        resource_element = et.SubElement(self.resources, 'resource')
+        resource_element.attrib['id'] = resource_name
+        resource_element.attrib['href'] = os.path.join('resources',
+                                                       f'{resource_name}.{suffix}')
+
+        return

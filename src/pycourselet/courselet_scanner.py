@@ -4,7 +4,7 @@ from typing import Generator, List
 
 from jinja2 import FileSystemLoader, Environment
 
-from .contexts import ContextManager, PageContext
+from .contexts import ContextManager, PageContext, FileContext
 from .tokens import *
 
 
@@ -30,6 +30,10 @@ class CourseletScanner:
         sorted_list_dir = sorted(list_dir, key=key_function)
         for item_name in sorted_list_dir:
             item_path = os.path.join(dir_path, item_name)
+            item_path = os.path.abspath(item_path)
+
+            ctx.push_create(FileContext, base_file_url=item_path)
+
             if os.path.isfile(item_path):
                 title = item_name
                 if (i := title.find('_')) >= 0:
@@ -61,7 +65,12 @@ class CourseletScanner:
             yield header_token
             return
 
-        # Control Tokens
+        # Picture Tokens
+        if image_token := ImageToken.parse(line):
+            yield image_token
+            return
+
+            # Control Tokens
         if paragraph_token := ParagraphEndToken.parse(line):
             yield paragraph_token
             return
