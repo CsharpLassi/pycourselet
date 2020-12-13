@@ -9,10 +9,10 @@ __author__ = "Lassi"
 __copyright__ = "Lassi"
 __license__ = "gplv3"
 
-__version__ = "0.1.0"
+__version__ = "0.2.1"
 
 try:
-    from .pycourselet import CourseletScanner, CourseletXmlContextCompiler
+    from pycourselet import CourseletScanner, CourseletXmlContextCompiler
 except ImportError:
     from pycourselet import CourseletScanner, CourseletXmlContextCompiler
 

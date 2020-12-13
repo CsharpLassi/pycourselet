@@ -8,18 +8,19 @@ with open('requirements/productive.txt') as f:
 
 setuptools.setup(
     name="pycourselet",  # Replace with your own username
-    version="0.2.0",
+    version="0.2.1",
     author="Christoph Laßmann",
     author_email="csharplassi@posteo.de",
     description="Tool to create courselets for Lernsax",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/CsharpLassi/pycourselet",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(where='src'),
+    package_dir={'': 'src'},
     install_requires=required,
     entry_points={
         'console_scripts': [
-            'pycourselet = pycourselet.courselet:run',
+            'pycourselet = pycourselet.cmd.courselet:run',
         ],
     },
     classifiers=[

@@ -9,4 +9,4 @@ src_dir="$base_dir/src"
 source "$base_dir/venv/bin/activate"
 
 export PYTHONPATH=$PYTHONPATH:"$src_dir"
-python "$src_dir/courselet.py" $@
+python "$src_dir/pycourselet/cmd/courselet.py" $@
