@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from .token import Token
-from ..contexts import ParagraphContext, ContextManager
+from ..contexts import ParagraphContext, ContextManager, TableBlockContext
 
 
 class FileToken(Token):
@@ -20,6 +20,10 @@ class ParagraphEndToken(Token):
 
         if ctx.exist_goto(ParagraphContext):
             ctx.goto(ParagraphContext)
+            ctx.pop()
+
+        if ctx.exist_goto(TableBlockContext):
+            ctx.goto(TableBlockContext)
             ctx.pop()
 
     @staticmethod

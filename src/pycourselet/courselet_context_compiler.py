@@ -76,6 +76,9 @@ class CourseletContextCompiler:
             EnumerateHeadingContext: (
                 self.begin_enumerate_heading_context,
                 self.end_enumerate_heading_context),
+            TableBeginContext: (
+                self.begin_table_begin_context,
+                self.end_table_begin_context),
             TableBlockContext: (
                 self.begin_table_block_context,
                 self.end_table_block_context),
@@ -199,6 +202,12 @@ class CourseletContextCompiler:
         return
 
     def end_enumerate_heading_context(self, context: EnumerateHeadingContext, **kwargs):
+        return
+
+    def begin_table_begin_context(self, context: TableBeginContext, **kwargs):
+        return
+
+    def end_table_begin_context(self, context: TableBeginContext, **kwargs):
         return
 
     def begin_table_block_context(self, context: TableBlockContext, **kwargs):

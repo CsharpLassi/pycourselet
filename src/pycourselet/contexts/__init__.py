@@ -13,6 +13,7 @@ __all__ = ['ContextManager',
            'ListContext', 'ListHeadingContext',
            'EnumerateContext', 'EnumerateHeadingContext',
            'TableBlockContext', 'TableRowBreakContext', 'TableColumnBreakContext',
+           'TableBeginContext',
            'AudioTextContext'
            ]
 
@@ -34,5 +35,5 @@ from .math_context import MathTextContext
 from .page_context import PageContext
 from .paragraph_context import ParagraphContext
 from .table_contexts import TableBlockContext, TableRowBreakContext, \
-    TableColumnBreakContext
+    TableColumnBreakContext, TableBeginContext
 from .text_context import TextContext
