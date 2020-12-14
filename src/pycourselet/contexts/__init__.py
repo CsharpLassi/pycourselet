@@ -11,6 +11,7 @@ __all__ = ['ContextManager',
            'ImageContext',
            'FileContext',
            'ListContext', 'ListHeadingContext',
+           'EnumerateContext', 'EnumerateHeadingContext',
            'TableBlockContext', 'TableRowBreakContext', 'TableColumnBreakContext',
            'AudioTextContext'
            ]
@@ -22,6 +23,7 @@ from .context import Context, TypeContext
 from .context_manager import ContextManager
 from .control_contexts import FileContext
 from .element_context import ElementContext
+from .enumerate_context import EnumerateContext, EnumerateHeadingContext
 from .heading_context import (PageHeadingContext, PageHeadingTextContext,
                               HeadingContext, HeadingTextContext,
                               SubHeadingTextContext
