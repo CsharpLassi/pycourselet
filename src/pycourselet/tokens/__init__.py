@@ -3,10 +3,11 @@ __all__ = ['Token',
            'ParagraphEndToken', 'FileToken',
            'TextToken', 'MathTextToken', 'CheckBoxTextToken',
            'ImageToken',
-           'ListToken',
+           'ListToken', 'EnumerateToken',
            'TableRowToken']
 
 from .control_tokens import ParagraphEndToken, FileToken
+from .enumerate_token import EnumerateToken
 from .header_token import HeaderToken
 from .image_token import ImageToken
 from .list_token import ListToken

@@ -70,6 +70,15 @@ class CourseletContextCompiler:
             ListHeadingContext: (
                 self.begin_list_heading_context,
                 self.end_list_heading_context),
+            EnumerateContext: (
+                self.begin_enumerate_context,
+                self.end_enumerate_context),
+            EnumerateHeadingContext: (
+                self.begin_enumerate_heading_context,
+                self.end_enumerate_heading_context),
+            TableBeginContext: (
+                self.begin_table_begin_context,
+                self.end_table_begin_context),
             TableBlockContext: (
                 self.begin_table_block_context,
                 self.end_table_block_context),
@@ -180,6 +189,25 @@ class CourseletContextCompiler:
         return
 
     def end_list_heading_context(self, context: ListHeadingContext, **kwargs):
+        return
+
+    def begin_enumerate_context(self, context: EnumerateContext, **kwargs):
+        return
+
+    def end_enumerate_context(self, context: EnumerateContext, **kwargs):
+        return
+
+    def begin_enumerate_heading_context(self, context: EnumerateHeadingContext,
+                                        **kwargs):
+        return
+
+    def end_enumerate_heading_context(self, context: EnumerateHeadingContext, **kwargs):
+        return
+
+    def begin_table_begin_context(self, context: TableBeginContext, **kwargs):
+        return
+
+    def end_table_begin_context(self, context: TableBeginContext, **kwargs):
         return
 
     def begin_table_block_context(self, context: TableBlockContext, **kwargs):
@@ -373,6 +401,16 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
     def begin_list_heading_context(self, context: ListHeadingContext, **kwargs):
         element = self._create_element(context)
         element.text = context.text
+
+    # Enumerate
+    def begin_enumerate_context(self, context: EnumerateContext, **kwargs):
+        block = self._create_block(context)
+        self.current_page_block = block
+
+    def begin_enumerate_heading_context(self, context: EnumerateHeadingContext,
+                                        **kwargs):
+        element = self._create_element(context)
+        element.text = f'{context.level}. {context.text}'
 
     # Image
     def begin_image_context(self, context: ImageContext,

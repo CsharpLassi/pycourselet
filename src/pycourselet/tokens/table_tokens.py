@@ -14,7 +14,7 @@ class TableRowToken(Token):
 
     def walk(self, ctx: ContextManager):
         from ..contexts import TableBlockContext, TableRowBreakContext, \
-            TableColumnBreakContext
+            TableColumnBreakContext, TableBeginContext
 
         if self.no_print:
             return
@@ -22,7 +22,7 @@ class TableRowToken(Token):
         if ctx.exist_goto(TableBlockContext):
             ctx.push_create(TableRowBreakContext)
         else:
-            ctx.push_create(TableBlockContext)
+            ctx.push_create(TableBeginContext)
 
         for i, item in enumerate(self.row):
             for token in item:

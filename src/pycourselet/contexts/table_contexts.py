@@ -1,7 +1,7 @@
 from typing import Optional
 
 from .block_context import BlockContext
-from .context import NeedSettings
+from .context import NeedSettings, Context
 from .element_context import ElementContext
 
 
@@ -14,6 +14,15 @@ class TableBlockContext(BlockContext):
     def need() -> Optional[NeedSettings]:
         from .page_context import PageContext
         return NeedSettings(PageContext)
+
+
+class TableBeginContext(Context):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @staticmethod
+    def need() -> Optional[NeedSettings]:
+        return NeedSettings(TableBlockContext, force_new=True)
 
 
 class TableColumnBreakContext(ElementContext):

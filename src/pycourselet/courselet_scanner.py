@@ -75,6 +75,11 @@ class CourseletScanner:
             yield list_token
             return
 
+        # Enumerate Token
+        if enumerate_token := EnumerateToken.parse(line):
+            yield enumerate_token
+            return
+
         # Table
         if table_token := TableRowToken.parse(line):
             yield table_token
