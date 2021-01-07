@@ -9,7 +9,7 @@ __author__ = "Lassi"
 __copyright__ = "Lassi"
 __license__ = "gplv3"
 
-__version__ = "0.2.1"
+__version__ = "0.2.3"
 
 try:
     from pycourselet import CourseletScanner, CourseletXmlContextCompiler
