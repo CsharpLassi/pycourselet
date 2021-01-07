@@ -2,7 +2,7 @@ from typing import Optional
 
 from .block_context import BlockContext
 from .context import NeedSettings
-from .text_context import TextContext
+from .element_context import ElementContext
 
 
 class EnumerateContext(BlockContext):
@@ -15,9 +15,9 @@ class EnumerateContext(BlockContext):
         return NeedSettings(PageContext)
 
 
-class EnumerateHeadingContext(TextContext):
+class EnumerateHeadingContext(ElementContext):
     def __init__(self, level: int = 0, **kwargs):
-        super().__init__(type='heading3', **kwargs)
+        super().__init__(type='text', **kwargs)
 
         self.level = level
 

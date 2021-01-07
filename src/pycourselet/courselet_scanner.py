@@ -76,9 +76,10 @@ class CourseletScanner:
             return
 
         # Enumerate Token
-        if enumerate_token := EnumerateToken.parse(line):
+        if result := EnumerateToken.parse(line):
+            enumerate_token = result[0]
+            line = result[1]
             yield enumerate_token
-            return
 
         # Table
         if table_token := TableRowToken.parse(line):
@@ -92,8 +93,6 @@ class CourseletScanner:
 
         for token in TextToken.parse(line):
             yield token
-
-
 
     def _walk_tokens(self, tokens: List[Token], ctx: ContextManager):
 

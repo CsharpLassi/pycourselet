@@ -1,6 +1,7 @@
 from typing import Optional
 
 from .context import NeedSettings
+from .enumerate_context import EnumerateContext
 from .text_context import TextContext
 
 
@@ -14,4 +15,4 @@ class MathTextContext(TextContext):
         from .paragraph_context import ParagraphContext
         from .table_contexts import TableBlockContext
 
-        return NeedSettings(ParagraphContext, TableBlockContext)
+        return NeedSettings(ParagraphContext, TableBlockContext, EnumerateContext)

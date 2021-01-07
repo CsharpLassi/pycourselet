@@ -410,7 +410,7 @@ class CourseletXmlContextCompiler(CourseletContextCompiler):
     def begin_enumerate_heading_context(self, context: EnumerateHeadingContext,
                                         **kwargs):
         element = self._create_element(context)
-        element.text = f'{context.level}. {context.text}'
+        element.text = f'&lt;b&gt;{context.level}.&lt;/b&gt; '
 
     # Image
     def begin_image_context(self, context: ImageContext,
