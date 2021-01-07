@@ -1,22 +1,21 @@
 from __future__ import annotations
 
 import re
-from typing import Optional
+from typing import Optional, Tuple
 
 from .token import Token
 from ..contexts import ContextManager, EnumerateHeadingContext
 
 
 class EnumerateToken(Token):
-    def __init__(self, level: int, text: str):
+    def __init__(self, level: int):
         self.level = level
-        self.text = text
 
     def walk(self, ctx: ContextManager):
-        ctx.push_create(EnumerateHeadingContext, level=self.level, text=self.text)
+        ctx.push_create(EnumerateHeadingContext, level=self.level)
 
     @staticmethod
-    def parse(source: str) -> Optional[EnumerateToken]:
+    def parse(source: str) -> Optional[Tuple[EnumerateToken, str]]:
         source = source.lstrip().rstrip()
         pattern = r'^[0-9]*[.][ ]'
 
@@ -27,4 +26,4 @@ class EnumerateToken(Token):
             level = int(source[:reg[1] - 2])
             text = source[reg[1]:].lstrip()
 
-            return EnumerateToken(level, text)
+            return EnumerateToken(level), text

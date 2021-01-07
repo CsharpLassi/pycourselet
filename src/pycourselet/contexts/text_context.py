@@ -2,6 +2,7 @@ from typing import Optional
 
 from .context import NeedSettings
 from .element_context import ElementContext
+from .enumerate_context import EnumerateContext
 
 
 class TextContext(ElementContext):
@@ -14,4 +15,4 @@ class TextContext(ElementContext):
     def need() -> Optional[NeedSettings]:
         from .paragraph_context import ParagraphContext
         from .table_contexts import TableBlockContext
-        return NeedSettings(ParagraphContext, TableBlockContext)
+        return NeedSettings(ParagraphContext, TableBlockContext, EnumerateContext)
